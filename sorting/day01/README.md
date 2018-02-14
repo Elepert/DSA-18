@@ -20,6 +20,7 @@ By doing this assignment, you should be able to:
 * You can find our slides about heapsort [here](https://drive.google.com/open?id=1FymC42ujtVceMMYiw9Wa8vMU1ehTvf7uLgcyuIutN68).
 * [Princeton Algorithms lecture on binary heaps](https://www.youtube.com/watch?v=U_TfcSpQmNc)
 * [MIT lecture slides](https://drive.google.com/open?id=1A-T35tNHuOmlW4Y_u_65HMSGGzBsIljC) on Quicksort, which also covers why randomization guarantees O(NlogN) time. Corresponding lecture [here](https://www.youtube.com/watch?v=vK_q-C-kXhs)
+* Quick [stackexchange](https://cs.stackexchange.com/questions/35509/can-anybody-explain-intuitively-why-quick-sort-need-logn-extra-space-and-merge) covering space complexity of Quicksort vs Mergesort
 
 ## Assignment
 
@@ -55,7 +56,7 @@ The code for the N^2 solution is provided in `Problems.java`. Can you do better?
 
 <details> 
   <summary>Hint 1</summary>
-    In order to find the median of an array, we only need to know the value of either one or two elements in the corresponding sorted array. For example, if currently we've seen elements `[4, 3, 1, 5, 2]`, we can maintain the sorted array `[1, 2, 3, 4, 5]` and quickly index into the middle to find the median, which is `3`. If we add a number (say, 4), then the sorted array becomes `[1, 2, 3, 4, 4, 5]`, and we look at the elements at indices `2` and `3` to calculate the median (which evaluates to `3.5`).
+    In order to find the median of an array, we only need to know the value of either one or two elements in the corresponding sorted array. For example, if currently we've seen elements `[4, 3, 1, 5, 2]`, we only need one element from the corresponding sorted array `[1, 2, 3, 4, 5]`, which is the one at index `2` (which is `3`). If we add a number (say, 4), then the sorted array becomes `[1, 2, 3, 4, 4, 5]`, and we only need to know the elements at indices `2` and `3` to calculate the median (which evaluates to `3.5`).
 </details>
 
 <details> 
