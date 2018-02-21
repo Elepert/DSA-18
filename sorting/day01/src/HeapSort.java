@@ -1,3 +1,5 @@
+import java.util.*;
+
 public class HeapSort extends SortAlgorithm {
     int size;
     int[] heap;
@@ -55,22 +57,45 @@ public class HeapSort extends SortAlgorithm {
         }
     }
 
+    public void sinkSort(int i, int hsize) {
+        int leftChild = leftChild(i);
+        int rightChild = rightChild(i);
+        if (leftChild > hsize-1 || leftChild < 0){
+            leftChild = i;
+        }
+        if (rightChild > hsize-1 || rightChild < 0){
+            rightChild = i;
+        }
+        int max;
+        if (heap[i] < heap[leftChild] || heap[i] < heap[rightChild]) {
+            if (heap[leftChild] > heap[rightChild]){
+                max = leftChild;
+            } else {
+                max = rightChild;
+            }
+            swap(i, max);
+            sinkSort(max, hsize);
+        }
+    }
+
     /**
-     * Best-case runtime:
-     * Worst-case runtime:
-     * Average-case runtime:
+     * Best-case runtime: nlogn
+     * Worst-case runtime: nlogn
+     * Average-case runtime: nlogn
      *
-     * Space-complexity:
+     * Space-complexity: logn
      */
     @Override
     public int[] sort(int[] array) {
         heapify(array);
         int hsize = size;
         for (int i=size-1; i>0; i--) {
-            swap(0, hsize-1);
+            hsize--;
+            swap(0, hsize);
+
+            sinkSort(0, hsize);
 
         }
-
         return heap;
     }
 }

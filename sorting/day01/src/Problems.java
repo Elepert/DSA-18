@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.PriorityQueue;
+import java.util.Arrays;
 
 public class Problems {
 
@@ -42,7 +43,54 @@ public class Problems {
      */
     public static double[] runningMedian(int[] inputStream) {
         double[] runningMedian = new double[inputStream.length];
-        // TODO
+        if (inputStream.length==0){
+            return runningMedian;
+        }
+
+        PriorityQueue<Integer> afterMedian = minPQ();
+        PriorityQueue<Integer> beforeMedian = maxPQ();
+
+        double median =(double) inputStream[0];
+        double beforeM = inputStream[0];
+        double afterM = 0;
+        beforeMedian.offer(inputStream[0]);
+        runningMedian[0] = inputStream[0];
+
+        int counter=1;
+        for (int i = 1; i<inputStream.length;i++){
+
+            if (inputStream[i] > median){
+                afterMedian.offer(inputStream[i]);
+
+            } else if (inputStream[i] <= median) {
+                beforeMedian.offer(inputStream[i]);
+
+            }
+
+            counter++;
+            int difference = afterMedian.size() - beforeMedian.size();
+            while (difference != 0 && difference != -1) {
+
+                if (difference > 0) {
+                    beforeMedian.offer(afterMedian.poll());
+                } else if (difference < -1) {
+                    afterMedian.offer(beforeMedian.poll());
+                }
+                difference = afterMedian.size() - beforeMedian.size();
+            }
+
+            if (counter%2 == 0){
+
+                afterM = afterMedian.peek();
+                beforeM = beforeMedian.peek();
+
+                median = (afterM+beforeM)/2;
+            } else {
+                median = beforeMedian.peek();
+            }
+
+            runningMedian[counter-1] = median;
+        }
         return runningMedian;
     }
 
