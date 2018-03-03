@@ -5,7 +5,7 @@ import java.util.Collections;
 public class CountingSort {
 
     /**
-     * Use counting sort to sort positive integer array A.
+     * Use counting sort to sort non-negative integer array A.
      * Runtime: TODO
      *
      * k: maximum element in array A
