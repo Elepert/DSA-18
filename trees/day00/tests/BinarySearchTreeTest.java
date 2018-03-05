@@ -66,10 +66,14 @@ public class BinarySearchTreeTest {
     }
 
     private void predTest(BinarySearchTree<Integer> bst, Integer[] input) {
+
         Integer[] sorted = sorted(input);
+
         for (int j = 0; j < sorted.length; j++) {
             Integer predecessor = null;
+
             if (j > 0)
+
                 predecessor = sorted[j-1];
             assertEquals(predecessor, bst.findPredecessor(sorted[j]));
         }
@@ -94,8 +98,11 @@ public class BinarySearchTreeTest {
     }
 
     private void testSuccessor(BinarySearchTree<Integer> bst, Integer[] input) {
+
         Integer[] sorted = sorted(input);
+
         for (int j = 0; j < sorted.length; j++) {
+
             Integer successor = null;
             if (j < sorted.length - 1)
                 successor = sorted[j+1];
@@ -131,14 +138,18 @@ public class BinarySearchTreeTest {
 
     private void delTest(BinarySearchTree<Integer> bst, Integer[] input) {
         Integer[] sorted = sorted(input);
+
         List<Integer> list = Arrays.asList(sorted);
         list = new ArrayList<>(list);
         for (int j = 0; j <input.length; j++) {
             int randomNum = ThreadLocalRandom.current().nextInt(input.length-j);
+
             bst.delete(list.get(randomNum));
             list.remove(randomNum);
             Integer[] expected = Arrays.copyOf(list.toArray(), list.size(), Integer[].class);
+
             Object[] traversal = bst.inOrderTraversal().toArray();
+
             Integer[] received = Arrays.copyOf(traversal, traversal.length, Integer[].class);
             assertArrayEquals(expected, received);
         }

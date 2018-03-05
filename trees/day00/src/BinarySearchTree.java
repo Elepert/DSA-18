@@ -1,4 +1,5 @@
 import java.util.List;
+import java.util.ArrayList;
 
 public class BinarySearchTree<T extends Comparable<T>> {
     TreeNode<T> root;
@@ -28,8 +29,32 @@ public class BinarySearchTree<T extends Comparable<T>> {
     }
 
     public List<T> inOrderTraversal() {
-        // TODO
-        return null;
+        List<T> traversal = new ArrayList<T>();
+
+        if (root == null){
+            return traversal;
+        }
+
+        TreeNode<T> tempm = root;
+
+        while(tempm.hasLeftChild()){
+            tempm = tempm.leftChild;
+        }
+
+        traversal.add(tempm.key);
+
+        T key = tempm.key;
+
+        for (int i = 1; i<size(); i++){
+
+            if (key != null) {
+                key = findSuccessor(key);
+
+                traversal.add(key);
+            }
+
+        }
+        return traversal;
     }
 
     /**
@@ -45,33 +70,41 @@ public class BinarySearchTree<T extends Comparable<T>> {
             return false;
         }
         TreeNode<T> deleted = delete(toDelete);
-        if (toDelete == root) {
-            root = deleted;
-        }
         size--;
         return true;
     }
 
     private TreeNode<T> delete(TreeNode<T> n) {
         // Recursive base case
+
         if (n == null) return null;
 
         TreeNode<T> replacement;
 
-        if (n.isLeaf())
+        if (n.isLeaf()) {
             // Case 1: no children
             replacement = null;
-        else if (n.hasRightChild() != n.hasLeftChild())
+            if (root == n){
+                root = null;
+            }
+        } else if (n.hasRightChild() != n.hasLeftChild()) {
             // Case 2: one child
             replacement = (n.hasRightChild()) ? n.rightChild : n.leftChild; // replacement is the non-null child
-        else {
+            if (root == n){
+                root = replacement;
+            }
+        } else {
             // Case 3: two children
-            // TODO
-            replacement = null;
+            replacement = findMin(n.rightChild);
+            n.key = replacement.key;
+            return delete(replacement);
+
         }
 
         // Put the replacement in its correct place, and set the parent.
+
         n.replaceWith(replacement);
+
         return replacement;
     }
 
@@ -87,6 +120,7 @@ public class BinarySearchTree<T extends Comparable<T>> {
 
     public T findSuccessor(T key) {
         TreeNode<T> n = find(root, key);
+
         if (n != null) {
             TreeNode<T> successor = findSuccessor(n);
             if (successor != null)
@@ -95,27 +129,72 @@ public class BinarySearchTree<T extends Comparable<T>> {
         return null;
     }
 
+    private TreeNode<T> findMin(TreeNode<T> n){
+        while(n.hasLeftChild()){
+            n = n.leftChild;
+        }
+        return n;
+    }
+
+    private TreeNode<T> findMax(TreeNode<T> n){
+        while(n.hasRightChild()){
+            n = n.rightChild;
+        }
+        return n;
+    }
+
     private TreeNode<T> findPredecessor(TreeNode<T> n) {
-        // TODO
+
+        if (n.hasLeftChild()) {
+
+            return findMax(n.leftChild);
+        } else if (n.isRightChild()){
+            return n.parent;
+        } else if (n.isLeftChild()){
+            TreeNode<T> ptemp = n;
+            while(ptemp.isLeftChild()){
+                ptemp = ptemp.parent;
+            }
+            if (ptemp.isRightChild()) {
+                return ptemp.parent;
+            }
+        }
         return null;
     }
 
     private TreeNode<T> findSuccessor(TreeNode<T> n) {
-        // TODO
+
+        if (n.hasRightChild()){
+            return findMin(n.rightChild);
+        } else if (n.isLeftChild()){
+            return n.parent;
+        } else if (n.isRightChild()){
+            TreeNode<T> ptemp = n;
+            while(ptemp.isRightChild()){
+                ptemp = ptemp.parent;
+            }
+            if (ptemp.isLeftChild()) {
+                return ptemp.parent;
+            }
+        }
         return null;
+
     }
 
     /**
      * Returns a node with the given key in the BST, or null if it doesn't exist.
      */
     private TreeNode<T> find(TreeNode<T> currentNode, T key) {
-        if (currentNode == null)
+        if (currentNode == null) {
             return null;
+        }
+
         int cmp = key.compareTo(currentNode.key);
         if (cmp < 0)
             return find(currentNode.leftChild, key);
         else if (cmp > 0)
             return find(currentNode.rightChild, key);
+
         return currentNode;
     }
 

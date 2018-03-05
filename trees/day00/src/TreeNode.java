@@ -38,6 +38,7 @@ public class TreeNode<T extends Comparable<T>> {
     }
 
     public void replaceWith(TreeNode<T> n) {
+
         if (isLeftChild())
             parent.leftChild = n;
 
@@ -46,6 +47,7 @@ public class TreeNode<T extends Comparable<T>> {
 
         if (n != null)
             n.parent = parent;
+
     }
 
     public void moveChildrenFrom(TreeNode<T> n) {
