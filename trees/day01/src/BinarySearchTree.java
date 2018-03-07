@@ -40,6 +40,10 @@ public class BinarySearchTree<T extends Comparable<T>> {
     }
 
     public boolean delete(T key) {
+
+        if (root == null) {
+            return false;
+        }
         if (find(root, key) == null) {
             System.out.println("Key does not exist");
             return false;
@@ -106,12 +110,15 @@ public class BinarySearchTree<T extends Comparable<T>> {
      */
     TreeNode<T> insert(TreeNode<T> node, T key) {
         if (node == null) return new TreeNode<>(key);
+
         int cmp = key.compareTo(node.key);
         if (cmp < 0) {
             node.leftChild = insert(node.leftChild, key);
         } else {
+
             node.rightChild = insert(node.rightChild, key);
         }
+
         return node;
     }
 }

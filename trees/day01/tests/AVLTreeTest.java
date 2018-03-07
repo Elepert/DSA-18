@@ -31,9 +31,13 @@ public class AVLTreeTest {
         inputs[3] = new Integer[]{13, 12, 10, 5, 3, -1, -7, -10, -50};
         inputs[4] = new Integer[]{23, 15, 10, 8, 40, 38, 37, 36, 24, 25, 26, 27};
         for (int i = 0; i < 5; i++) {
+
             bsts[i].addAll(inputs[i]);
+
             assertEquals(bsts[i].size(), inputs[i].length);
+
             assertValidAVL(bsts[i].root);
+
         }
     }
 
@@ -77,12 +81,17 @@ public class AVLTreeTest {
 
 
     private void delTest(AVLTree<Integer> bst, Integer[] input) {
+
         Integer[] sorted = sorted(input);
+
         List<Integer> list = Arrays.asList(sorted);
         list = new ArrayList<>(list);
+
         for (int j = 0; j < input.length; j++) {
             int randomNum = ThreadLocalRandom.current().nextInt(input.length - j);
+
             bst.delete(list.get(randomNum));
+
             list.remove(randomNum);
             Integer[] expected = Arrays.copyOf(list.toArray(), list.size(), Integer[].class);
             Object[] traversal = bst.inOrderTraversal().toArray();
@@ -120,6 +129,8 @@ public class AVLTreeTest {
     public void balanceTest() {
         AVLTree<Integer> bst = new AVLTree<>();
         for (int i = 0; i < Math.pow(2, 12); i++) {
+            //System.out.print("Bst: ");
+            //System.out.println(Arrays.toString(bst.inOrderTraversal().toArray()));
             bst.add(i);
             assertValidAVL(bst.root);
         }

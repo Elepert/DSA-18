@@ -31,4 +31,14 @@ public class TreeNode<T extends Comparable<T>> {
         TreeNode otherNode = (TreeNode) other;
         return otherNode.key.equals(this.key);
     }
+
+    @Override
+    public String toString() {
+        return "TreeNode{" +
+                "key=" + key +
+                ", \n       leftChild=" + leftChild +
+                ", \n       rightChild=" + rightChild +
+                ", \nheight=" + height +
+                '}';
+    }
 }
