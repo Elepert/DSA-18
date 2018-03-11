@@ -28,22 +28,42 @@ public class RedBlackTree<T extends Comparable<T>> extends BinarySearchTree<T> {
 
     // make a left-leaning link lean to the right
     TreeNode<T> rotateRight(TreeNode<T> h) {
-        // TODO
-        return h;
+        TreeNode<T> x = h.leftChild;
+        TreeNode<T> b = x.rightChild;
+        x.rightChild = h;
+        h.leftChild = b;
+
+        return x;
     }
 
     // make a right-leaning link lean to the left
     TreeNode<T> rotateLeft(TreeNode<T> h) {
-        // TODO
-        return h;
+        TreeNode<T> x = h.rightChild;
+        TreeNode<T> b = x.leftChild;
+        x.leftChild = h;
+        h.rightChild = b;
+
+        return x;
+
     }
 
     // flip the colors of a TreeNode and its two children
     TreeNode<T> flipColors(TreeNode<T> h) {
-        // TODO
+        h.color = !h.color;
+
+        // change the color to black.
+        h.leftChild.color = BLACK;
+        h.rightChild.color = BLACK;
         return h;
     }
 
+    void swapColors(TreeNode<T> node1, TreeNode<T> node2)
+    {
+
+        boolean temp = node1.color;
+        node1.color = node2.color;
+        node2.color = temp;
+    }
 
     /**
      * fix three cases:
@@ -53,20 +73,32 @@ public class RedBlackTree<T extends Comparable<T>> extends BinarySearchTree<T> {
      * return balanced node
      */
     private TreeNode<T> balance(TreeNode<T> h) {
-        // TODO
+        if (isRed(h.rightChild) && !isRed(h.leftChild)){
+            h = rotateLeft(h);
+            swapColors(h, h.leftChild);
+        }
+
+        if (isRed(h.leftChild) && isRed(h.leftChild.leftChild)){
+            h = rotateRight(h);
+            swapColors(h, h.rightChild);
+        }
+
+        if (isRed(h.leftChild) && isRed(h.rightChild)) {
+            h = flipColors(h);
+        }
+
         return h;
     }
 
 
     /**
      * Recursively insert a new node into the BST
-     * Runtime: TODO
+     * Runtime: O(logn)
      */
     @Override
     TreeNode<T> insert(TreeNode<T> h, T key) {
-        h = super.insert(h, key);
-        // TODO: use balance to correct for the three rotation cases
-        return h;
+        h = super.insert(h,key);
+        return balance(h);
     }
 
 

@@ -12,4 +12,14 @@ public class TreeNode<T extends Comparable>{
         this.rightChild = null;
         this.color = color;
     }
+
+    @Override
+    public String toString() {
+        return "TreeNode{" +
+                "key=" + key +
+                ", \n       leftChild=" + leftChild +
+                ", \n       rightChild=" + rightChild +
+                ", \ncolor=" + color +
+                '}';
+    }
 }

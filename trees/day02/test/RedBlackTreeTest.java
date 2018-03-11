@@ -128,7 +128,9 @@ public class RedBlackTreeTest {
         RedBlackTree<Integer> rbt = new RedBlackTree<>();
         List<Integer> input = Arrays.asList(3, 1, 2, 6, 3, 4, 9, 10, 1, 2, 3);
         for (Integer i: input) {
+
             rbt.add(i);
+
         }
         isRedBlack(rbt);
         containsCorrectValues(rbt, input);
@@ -162,6 +164,20 @@ public class RedBlackTreeTest {
         List<Integer> input = Arrays.asList(76, 43, 50, 19, 74, 56, 13, 8, 88, 41, 45, 26, 91, 38, 69, 79, 29, 75, 94, 3, 84, 13, 89, 64, 10, 97, 86, 98, 66, 87, 48, 95, 97, 82, 34, 7, 4, 63, 44, 90, 28, 36, 81, 87, 88, 53, 77, 89, 39, 98, 46, 42, 17, 83, 15, 15, 29, 16, 72, 57, 10, 74, 27, 38, 82, 85, 54, 42, 52, 17, 51, 89, 98, 52, 31, 84, 78, 94, 12, 27, 23, 93, 90, 3, 37, 31, 63, 62, 91, 2, 38, 39, 90, 5, 60, 69, 47, 39, 7, 85);
         for (Integer i: input) {
             rbt.add(i);
+        }
+        isRedBlack(rbt);
+        containsCorrectValues(rbt, input);
+    }
+
+    @Test
+    public void testAdd7() {
+        RedBlackTree<Integer> rbt = new RedBlackTree<>();
+        List<Integer> input = Arrays.asList(10,20,30,40,50,25);
+        for (Integer i: input) {
+
+            rbt.add(i);
+
+
         }
         isRedBlack(rbt);
         containsCorrectValues(rbt, input);
