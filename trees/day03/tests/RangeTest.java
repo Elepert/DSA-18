@@ -188,11 +188,13 @@ public class RangeTest {
         List<Integer> list = Arrays.asList(sorted);
         list = new ArrayList<>(list);
         for (int j = 0; j < input.length; j++) {
+            System.out.println("Deleting new -----------------");
             int randomNum = ThreadLocalRandom.current().nextInt(input.length - j);
             int minVal = Collections.min(Arrays.asList(input));
             int maxVal = Collections.max(Arrays.asList(input));
             int lo = ThreadLocalRandom.current().nextInt(minVal, maxVal + 1);
             int hi = ThreadLocalRandom.current().nextInt(lo, maxVal + 1);
+            System.out.println(list.get(randomNum));
             bst.delete(list.get(randomNum));
             list.remove(randomNum);
             Integer[] expected = Arrays.copyOf(list.toArray(), list.size(), Integer[].class);
@@ -201,7 +203,9 @@ public class RangeTest {
             assertValidAVL(bst.root);
             assertArrayEquals(expected, received);
             assertArrayEquals(correctRange(toIntegerArray(list.toArray()), lo, hi), bst.rangeIndex(lo, hi).toArray());
+
             assertEquals(correctRange(toIntegerArray(list.toArray()), lo, hi).length, bst.rangeCount(lo, hi));
+            System.out.println("Assertion failed after");
         }
     }
 

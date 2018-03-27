@@ -5,6 +5,7 @@ public class RangeNode<T extends Comparable<T>> {
     public RangeNode<T> leftChild;
     public RangeNode<T> rightChild;
     public int height;
+    public int Subtree;
 
     public RangeNode(T key) {
         this(key, 0);
@@ -15,6 +16,8 @@ public class RangeNode<T extends Comparable<T>> {
         this.leftChild = null;
         this.rightChild = null;
         this.height = height;
+        this.Subtree = 1;
+
     }
 
     public boolean hasLeftChild() {
@@ -33,5 +36,15 @@ public class RangeNode<T extends Comparable<T>> {
     public boolean equals(Object other) {
         RangeNode otherNode = (RangeNode) other;
         return otherNode.key.equals(this.key);
+    }
+
+    @Override
+    public String toString() {
+        return "TreeNode{" +
+                "key=" + key +
+                ", \n       leftChild=" + leftChild +
+                ", \n       rightChild=" + rightChild +
+                ", \nSubtree height=" + Subtree +
+                '}';
     }
 }

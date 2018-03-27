@@ -51,12 +51,16 @@ public class BinarySearchTree<T extends Comparable<T>> {
     }
 
     RangeNode<T> delete(RangeNode<T> n, T key) {
+        //System.out.println(n);
         int cmp = key.compareTo(n.key);
         if (cmp < 0) {
             n.leftChild = delete(n.leftChild, key);
+            n.Subtree -= 1;
         } else if (cmp > 0) {
             n.rightChild = delete(n.rightChild, key);
+            n.Subtree -= 1;
         } else {
+
             if (n.leftChild == null) {
                 return n.rightChild;
             } else if (n.rightChild == null) {
@@ -64,8 +68,10 @@ public class BinarySearchTree<T extends Comparable<T>> {
             } else {
                 RangeNode<T> tmp = n;
                 n = min(tmp.rightChild);
+                n.Subtree = tmp.Subtree;
                 n.rightChild = deleteMin(tmp.rightChild);
                 n.leftChild = tmp.leftChild;
+                n.Subtree -= 1;
             }
         }
         return n;
@@ -79,10 +85,16 @@ public class BinarySearchTree<T extends Comparable<T>> {
         return min(x.leftChild);
     }
 
+    private RangeNode<T> max(RangeNode<T> x) {
+        if (x.rightChild == null) return x;
+        return max(x.rightChild);
+    }
+
     /**
      * Removes the smallest key and associated value from the given subtree.
      */
     RangeNode<T> deleteMin(RangeNode<T> n) {
+        //n.Subtree -= 1;
         if (n.leftChild == null) return n.rightChild;
         n.leftChild = deleteMin(n.leftChild);
         return n;
@@ -110,9 +122,12 @@ public class BinarySearchTree<T extends Comparable<T>> {
         int cmp = key.compareTo(node.key);
         if (cmp < 0) {
             node.leftChild = insert(node.leftChild, key);
+
         } else {
             node.rightChild = insert(node.rightChild, key);
+
         }
+        node.Subtree += 1;
         return node;
     }
 }

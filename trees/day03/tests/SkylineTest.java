@@ -2,6 +2,7 @@
 import divide_and_conquer.Skyline;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -19,6 +20,16 @@ public class SkylineTest {
     }
 
     private void assertSkylineEquals(List<Skyline.Point> S, int[][] expected) {
+        System.out.println("Expected");
+        for (int j =0; j<expected.length; j++){
+            System.out.println(Arrays.toString(expected[j]));
+        }
+
+        System.out.println("S");
+        for (int i =0; i<S.size(); i++){
+            System.out.print(S.get(i).toString());
+            System.out.print("; ");
+        }
         assertEquals(expected.length, S.size());
         for (int i = 0; i < S.size(); i++) {
             assertArrayEquals(expected[i], new int[]{S.get(i).x, S.get(i).y});
