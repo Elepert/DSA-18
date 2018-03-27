@@ -88,8 +88,7 @@ public class AVLRangeTree extends BinarySearchTree<Integer> {
     }
 
     // Return all keys that are between [lo, hi] (inclusive).
-    // L = hi - lo
-    // TODO: runtime = O(log(N) + L)
+    // TODO: runtime = O(?)
     public List<Integer> rangeIndex(int lo, int hi) {
         List<Integer> l = new LinkedList<>();
         return inOrderRange(root, l, lo, hi);
@@ -117,7 +116,7 @@ public class AVLRangeTree extends BinarySearchTree<Integer> {
     }
 
     // return the number of keys between [lo, hi], inclusive
-    // TODO: runtime = O(logN))
+    // TODO: runtime = O(?)
     public int rangeCount(int lo, int hi) {
         /*if (root == null) return 0;
         RangeNode<Integer> treemax = maxTree(root);
