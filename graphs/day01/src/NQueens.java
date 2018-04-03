@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class NQueens {
@@ -37,6 +38,15 @@ public class NQueens {
         return false;
     }
 
+    public static boolean checkColumn(ArrayList<Integer> column, int c) {
+        for (int i = 0; i< column.size();i++){
+            if (column.get(i) == c) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     /**
      * Creates a deep copy of the input array and returns it
@@ -50,9 +60,46 @@ public class NQueens {
 
 
     public static List<char[][]> nQueensSolutions(int n) {
-        // TODO
-        List<char[][]> answers = new ArrayList<>();
+        ArrayList<char[][]> answers = new ArrayList<>();
+        ArrayList<Integer> columns = new ArrayList<>();
+        char[][] initBoard = new char[n][n];
+        for(int i=0; i<n; i++){
+            for(int j=0; j<n; j++){
+                initBoard[i][j] = '.';
+            }
+        }
+        Queens(0, n, initBoard, columns, answers);
         return answers;
     }
 
+    public static ArrayList<char[][]> Queens(int row, int n, char[][] board, ArrayList<Integer> column, ArrayList<char[][]> answers) {
+        if (row >= n ){
+            answers.add(copyOf(board));
+            return answers;
+        }
+        for (int i = 0; i < n; i++){
+            if (!checkDiagonal(board, row, i) && !checkColumn(column, i)){
+                board[row][i] = 'Q';
+                column.add(i);
+                Queens(row+1, n, board, column, answers);
+                column.remove(Integer.valueOf(i));
+            }
+            board[row][i] = '.';
+        }
+
+        return answers;
+    }
+
+    public static void printAllBoards(ArrayList<char[][]> boards){
+        for (int i = 0; i< boards.size(); i++){
+            printBoard(boards.get(i), boards.get(i).length);
+            System.out.println("--------------");
+        }
+    }
+
+    public static void printBoard(char[][] board, int n){
+        for (int i = 0; i<n; i++){
+            System.out.println(Arrays.toString(board[i]));
+        }
+    }
 }
