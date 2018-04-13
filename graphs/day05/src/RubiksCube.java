@@ -8,6 +8,8 @@ public class RubiksCube {
 
     private BitSet cube;
 
+    private BitSet solved;
+
     // initialize a solved rubiks cube
     public RubiksCube() {
         // 24 colors to store, each takes 3 bits
@@ -186,11 +188,124 @@ public class RubiksCube {
         }
         return listTurns;
     }
+    /*
+    /**
+     * State class to make the cost calculations simple
+     * This class holds a board state and all of its attributes
+     */
+    private class State {
+        // Each state needs to keep track of its cost and the previous state
+        private RubiksCube cube;
+        private int moves;                       // equal to g-cost in A*
+        public int cost;                         // equal to f-cost in A*
+        private State prev;
 
+        public State(RubiksCube cube, int moves, State prev) {
+            this.cube = cube;
+            this.moves = moves;
+            this.prev = prev;
+            cost = findCost();
+        }
+
+        /*
+         * Finds the cost of a state
+         */
+        //Runtime: O(N) because of manhattan() and numMisplaced()
+        public int findCost(){
+            int g = this.moves;
+            //int h2 = this.cube.manhattan();
+            //int h1 = this.cube.numMisplaced();
+            int f = g;//+h1+h2;
+            return f;
+        }
+
+        @Override
+
+        //Runtime: O(N)
+        public boolean equals(Object s) {
+            if (s == this) return true;
+            if (s == null) return false;
+            if (!(s instanceof State)) return false;
+            return ((State) s).cube.equals(this.cube);
+        }
+    }
+
+    public static Comparator<State> idComp = new Comparator<State>(){
+
+        @Override
+        //Runtime: O(1)
+        public int compare(State a, State b) {
+            if (a.cost<b.cost){
+                return -1;
+            } else if (b.cost<a.cost){
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+
+    };
 
     // return the list of rotations needed to solve a rubik's cube
     public List<Character> solve() {
-        // TODO
+        RubiksCube goalCube = new RubiksCube(this.solved);
+        State solutionState = new State(this, 0, null);
+        State start = new State(this, 0, null);
+
+        if (!this.isSolvable()){
+            return;
+        }
+
+        PriorityQueue<State> openQueue = new PriorityQueue<>(idComp);
+        ArrayList<State> closed = new ArrayList<>();
+        openQueue.add(start);
+
+        State closestState = start;
+        while (!openQueue.isEmpty()) {                                            //O(N)
+
+            closestState = openQueue.poll();                                      //O(logN)
+
+            Iterable<Board> neighbors = closestState.board.neighbors();
+            for (Board neighBoard : neighbors) {                                  //O(e/v). Also side note: there are 4 neighbors max with this implementation
+                State neighState = new State(neighBoard, closestState.moves+1,closestState);
+
+                if (neighState != null && neighState.board.equals(solutionState.board)) {
+                    solutionState.moves = closestState.moves+1;
+                    this.minMoves = solutionState.moves;
+                    solutionState.prev=closestState;
+//                    solution(solutionState);                  //prints steps to find solution
+                    return;                                     //stop search because this is the solution
+                }
+
+                boolean ignore = false;
+                for (State openState: openQueue){                                  //O(N)
+                    if (openState.board.equals(neighState.board)){
+                        ignore = true;
+                        if (neighState.cost<openState.cost) {
+                            openState.cost = neighState.cost;
+                            openState.moves = neighState.moves;
+                            openState.prev = closestState;
+                        }
+                    }
+                }
+                for (State closedState: closed){                                   //O(N)
+                    if (closedState.board.equals(neighState.board)){
+                        ignore = true;
+                        if (neighState.cost<closedState.cost) {
+                            closedState.cost = neighState.cost;
+                            closedState.moves = neighState.moves;
+                            closedState.prev = closestState;
+                        }
+                    }
+                }
+
+                if (ignore == false){
+                    neighState.prev = closestState;
+                    openQueue.add(neighState);
+                }
+            }
+            closed.add(closestState);
+        }
         return new ArrayList<>();
     }
 
