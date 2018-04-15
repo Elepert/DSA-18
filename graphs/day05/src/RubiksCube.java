@@ -8,7 +8,12 @@ public class RubiksCube {
 
     private BitSet cube;
 
-    private BitSet solved;
+    private BitSet solved ;
+    private int moves;                       // equal to g-cost in A*
+    public int cost;                         // equal to f-cost in A*
+    private RubiksCube prev;
+    public char last_move;
+
 
     // initialize a solved rubiks cube
     public RubiksCube() {
@@ -31,13 +36,24 @@ public class RubiksCube {
         cube = (BitSet) r.cube.clone();
     }
 
-    // return true if this rubik's cube is equal to the other rubik's cube
-    @Override
-    public boolean equals(Object obj) {
-        if (!(obj instanceof RubiksCube))
-            return false;
-        RubiksCube other = (RubiksCube) obj;
-        return other.cube.equals(cube);
+    private RubiksCube(BitSet cube, char last_move) {
+        this.cube = (BitSet) cube.clone();
+        this.last_move = last_move;
+    }
+
+    private RubiksCube(BitSet cube, int moves, RubiksCube prev) {
+        this.cube = (BitSet) cube.clone();
+        this.moves = moves;
+        this.prev = prev;
+        cost = findCost();
+    }
+
+    private RubiksCube(BitSet cube, int moves, RubiksCube prev, char last_move) {
+        this.cube = (BitSet) cube.clone();
+        this.moves = moves;
+        this.prev = prev;
+        this.last_move = last_move;
+        cost = findCost();
     }
 
     /**
@@ -79,6 +95,16 @@ public class RubiksCube {
         return s;
     }
 
+    public void printBitSet(){
+        for(int i=0; i< 24*3;i=i+3)
+        {
+            System.out.print(bitsetToInt(this.cube.get(i,i+3)));
+            System.out.print(", ");
+
+        }
+        System.out.println("");
+    }
+
     // index from 0-23, color from 0-5
     private void setColor(int index, int color) {
         BitSet colorBitset = intToBitset(color);
@@ -86,6 +112,31 @@ public class RubiksCube {
             cube.set(index * 3 + i, colorBitset.get(i));
     }
 
+    public int heuristic(BitSet s)
+    {
+        RubiksCube goal = new RubiksCube();
+        //s = goal.rotate('R').rotate('r').cube;
+
+        int numMC = 0;
+        /*System.out.println("Solved");
+        System.out.println(goal.cube.toString());
+        System.out.println("Input");
+        System.out.println(s.toString());*/
+        for(int i=0; i< 24*3;i=i+3)
+        {
+            /*System.out.println("New compare in cube");
+            System.out.println(bitsetToInt(s.get(i,i+3)));
+            System.out.println("What it should be");
+            System.out.println(bitsetToInt(goal.cube.get(i,i+3)));*/
+            if(!s.get(i,i+3).equals(goal.cube.get(i,i+3)))
+            {
+                numMC++;
+            }
+        }
+        /*System.out.println("misplaced");
+        System.out.println(numMC);*/
+        return numMC;
+    }
 
     // index from 0-23, returns a number from 0-5
     private int getColor(int index) {
@@ -99,6 +150,20 @@ public class RubiksCube {
             rub = rub.rotate(r);
         }
         return rub;
+    }
+
+    public Iterable<RubiksCube> neighbors(){
+        //System.out.println("Start is");
+        //this.printBitSet();
+        List<RubiksCube> neighbors = new ArrayList<>();
+        char[] moves = {'u', 'U', 'r', 'R', 'f', 'F'};
+        for (char rotation: moves){
+            //System.out.println(rotation);
+            RubiksCube tempn = new RubiksCube(rotate(rotation).cube,rotation);
+            //tempn.printBitSet();
+            neighbors.add(tempn);
+        }
+        return neighbors;
     }
 
 
@@ -188,53 +253,43 @@ public class RubiksCube {
         }
         return listTurns;
     }
-    /*
-    /**
-     * State class to make the cost calculations simple
-     * This class holds a board state and all of its attributes
-     */
-    private class State {
-        // Each state needs to keep track of its cost and the previous state
-        private RubiksCube cube;
-        private int moves;                       // equal to g-cost in A*
-        public int cost;                         // equal to f-cost in A*
-        private State prev;
 
-        public State(RubiksCube cube, int moves, State prev) {
-            this.cube = cube;
-            this.moves = moves;
-            this.prev = prev;
-            cost = findCost();
-        }
+    public void updateCube(RubiksCube prev) {
 
-        /*
-         * Finds the cost of a state
-         */
-        //Runtime: O(N) because of manhattan() and numMisplaced()
-        public int findCost(){
-            int g = this.moves;
-            //int h2 = this.cube.manhattan();
-            //int h1 = this.cube.numMisplaced();
-            int f = g;//+h1+h2;
-            return f;
-        }
+        this.moves = prev.moves +1;
+        this.prev = prev;
 
-        @Override
-
-        //Runtime: O(N)
-        public boolean equals(Object s) {
-            if (s == this) return true;
-            if (s == null) return false;
-            if (!(s instanceof State)) return false;
-            return ((State) s).cube.equals(this.cube);
-        }
+        cost = findCost();
     }
 
-    public static Comparator<State> idComp = new Comparator<State>(){
+    /*
+     * Finds the cost of a state
+     */
+    //Runtime: O(N) because of manhattan() and numMisplaced()
+    public int findCost() {
+        int g = this.moves;
+        //int h2 = this.cube.manhattan();
+        int h1 = this.heuristic(this.cube)/4;
+        int f = g+h1;//+h2;
+        return f;
+    }
+
+    @Override
+
+    //Runtime: O(N)
+    public boolean equals(Object s) {
+        if (s == this) return true;
+        if (s == null) return false;
+        if (!(s instanceof RubiksCube)) return false;
+        return ((RubiksCube) s).cube.equals(this.cube);
+    }
+
+
+    public static Comparator<RubiksCube> idComp = new Comparator<RubiksCube>(){
 
         @Override
         //Runtime: O(1)
-        public int compare(State a, State b) {
+        public int compare(RubiksCube a, RubiksCube b) {
             if (a.cost<b.cost){
                 return -1;
             } else if (b.cost<a.cost){
@@ -248,38 +303,45 @@ public class RubiksCube {
 
     // return the list of rotations needed to solve a rubik's cube
     public List<Character> solve() {
-        RubiksCube goalCube = new RubiksCube(this.solved);
-        State solutionState = new State(this, 0, null);
-        State start = new State(this, 0, null);
+        //System.out.println("Solving...");
+        /*BitSet solutionCube = new BitSet(24 * 3);
+        for (int side = 0; side < 6; side++) {
+            for (int i = 0; i < 4; i++) {
+                setColor(side * 4 + i, side);
+            }
+        }*/
 
-        if (!this.isSolvable()){
-            return;
-        }
-
-        PriorityQueue<State> openQueue = new PriorityQueue<>(idComp);
-        ArrayList<State> closed = new ArrayList<>();
-        openQueue.add(start);
-
-        State closestState = start;
+        RubiksCube solutionState = new RubiksCube();
+        //start.printBitSet();
+        //RubiksCube start = new RubiksCube(this.cube, 0, null);
+        //start.findCost();
+        PriorityQueue<RubiksCube> openQueue = new PriorityQueue<>(idComp);
+        ArrayList<RubiksCube> closed = new ArrayList<>();
+        openQueue.add(this);
+        //System.out.println("STARTING -------------------");
+        RubiksCube closestState = this;
         while (!openQueue.isEmpty()) {                                            //O(N)
 
             closestState = openQueue.poll();                                      //O(logN)
 
-            Iterable<Board> neighbors = closestState.board.neighbors();
-            for (Board neighBoard : neighbors) {                                  //O(e/v). Also side note: there are 4 neighbors max with this implementation
-                State neighState = new State(neighBoard, closestState.moves+1,closestState);
+            Iterable<RubiksCube> neighbors = closestState.neighbors();
+            for (RubiksCube neighState : neighbors) {                                  //O(e/v). Also side note: there are 4 neighbors max with this implementation
+                /*System.out.println("Neighbor");
+                System.out.println(neighState.cube.toString());*/
+                neighState.updateCube(closestState);
 
-                if (neighState != null && neighState.board.equals(solutionState.board)) {
+                if (neighState != null && neighState.cube.equals(solutionState.cube)) {
                     solutionState.moves = closestState.moves+1;
-                    this.minMoves = solutionState.moves;
+                    solutionState.last_move = neighState.last_move;
+                    //this.minMoves = solutionState.moves;
                     solutionState.prev=closestState;
 //                    solution(solutionState);                  //prints steps to find solution
-                    return;                                     //stop search because this is the solution
+                    return solutions(solutionState);                                     //stop search because this is the solution
                 }
 
                 boolean ignore = false;
-                for (State openState: openQueue){                                  //O(N)
-                    if (openState.board.equals(neighState.board)){
+                for (RubiksCube openState: openQueue){                                  //O(N)
+                    if (openState.cube.equals(neighState.cube)){
                         ignore = true;
                         if (neighState.cost<openState.cost) {
                             openState.cost = neighState.cost;
@@ -288,8 +350,8 @@ public class RubiksCube {
                         }
                     }
                 }
-                for (State closedState: closed){                                   //O(N)
-                    if (closedState.board.equals(neighState.board)){
+                for (RubiksCube closedState: closed){                                   //O(N)
+                    if (closedState.cube.equals(neighState.cube)){
                         ignore = true;
                         if (neighState.cost<closedState.cost) {
                             closedState.cost = neighState.cost;
@@ -304,9 +366,25 @@ public class RubiksCube {
                     openQueue.add(neighState);
                 }
             }
+            //System.out.println(closestState.cost);
             closed.add(closestState);
         }
-        return new ArrayList<>();
+        return null;
+    }
+
+    private List<Character> solutions(RubiksCube solution){
+
+        LinkedList<Character> totalRotations = new LinkedList<>();
+
+        RubiksCube current = solution;
+
+        while (current.moves != 0){
+            totalRotations.addFirst(current.last_move);
+            current = current.prev;
+        }
+
+        return totalRotations;
+
     }
 
 }
