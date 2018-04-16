@@ -10,7 +10,7 @@ public class RubiksCube {
 
     private BitSet solved ;
     private int moves;                       // equal to g-cost in A*
-    public int cost;                         // equal to f-cost in A*
+    public double cost;                         // equal to f-cost in A*
     private RubiksCube prev;
     public char last_move;
 
@@ -266,16 +266,15 @@ public class RubiksCube {
      * Finds the cost of a state
      */
     //Runtime: O(N) because of manhattan() and numMisplaced()
-    public int findCost() {
+    public double findCost() {
         int g = this.moves;
         //int h2 = this.cube.manhattan();
-        int h1 = this.heuristic(this.cube)/4;
-        int f = g+h1;//+h2;
+        double h1 = this.heuristic(this.cube)/3.0;
+        double f = g+h1;//+h2;
         return f;
     }
 
     @Override
-
     //Runtime: O(N)
     public boolean equals(Object s) {
         if (s == this) return true;
@@ -316,21 +315,23 @@ public class RubiksCube {
         //RubiksCube start = new RubiksCube(this.cube, 0, null);
         //start.findCost();
         PriorityQueue<RubiksCube> openQueue = new PriorityQueue<>(idComp);
+        Map<RubiksCube, Double> minCostVisited = new HashMap<>();
         ArrayList<RubiksCube> closed = new ArrayList<>();
         openQueue.add(this);
         //System.out.println("STARTING -------------------");
         RubiksCube closestState = this;
         while (!openQueue.isEmpty()) {                                            //O(N)
 
-            closestState = openQueue.poll();                                      //O(logN)
-
+            closestState = openQueue.poll();//O(logN)
+            //System.out.println(closestState.moves);
             Iterable<RubiksCube> neighbors = closestState.neighbors();
+            //System.out.println("Staring Neighbors");
             for (RubiksCube neighState : neighbors) {                                  //O(e/v). Also side note: there are 4 neighbors max with this implementation
                 /*System.out.println("Neighbor");
                 System.out.println(neighState.cube.toString());*/
                 neighState.updateCube(closestState);
 
-                if (neighState != null && neighState.cube.equals(solutionState.cube)) {
+                if (neighState != null && neighState.heuristic(neighState.cube) == 0){//.equals(solutionState.cube)) {
                     solutionState.moves = closestState.moves+1;
                     solutionState.last_move = neighState.last_move;
                     //this.minMoves = solutionState.moves;
@@ -340,26 +341,38 @@ public class RubiksCube {
                 }
 
                 boolean ignore = false;
+                //System.out.println("Starting openQueue");
+                //System.out.println(openQueue.size());
                 for (RubiksCube openState: openQueue){                                  //O(N)
                     if (openState.cube.equals(neighState.cube)){
+
                         ignore = true;
                         if (neighState.cost<openState.cost) {
+                            //System.out.println("OPEN STATE ENTERED ---------------");
                             openState.cost = neighState.cost;
                             openState.moves = neighState.moves;
                             openState.prev = closestState;
                         }
                     }
                 }
-                for (RubiksCube closedState: closed){                                   //O(N)
-                    if (closedState.cube.equals(neighState.cube)){
-                        ignore = true;
-                        if (neighState.cost<closedState.cost) {
-                            closedState.cost = neighState.cost;
-                            closedState.moves = neighState.moves;
-                            closedState.prev = closestState;
-                        }
+
+                if (minCostVisited.containsKey(neighState)) {
+                    //System.out.println("CLOSED STATE ENTERED *************************");
+                    ignore = true;
+                    if (minCostVisited.get(neighState) > neighState.cost) {
+
+                        /*RubiksCube closedState = minCostVisited.get(neighState);
+                        closedState.cost = neighState.cost;
+                        closedState.moves = neighState.moves;
+                        closedState.prev = closestState;*/
+                        minCostVisited.put(neighState, neighState.cost);
                     }
                 }
+                /*for (RubiksCube closedState: closed){                                   //O(N)
+                    if (closedState.cube.equals(neighState.cube)){
+
+                    }
+                }*/
 
                 if (ignore == false){
                     neighState.prev = closestState;
@@ -367,7 +380,8 @@ public class RubiksCube {
                 }
             }
             //System.out.println(closestState.cost);
-            closed.add(closestState);
+            //closed.add(closestState);
+            minCostVisited.put(closestState, closestState.cost);
         }
         return null;
     }

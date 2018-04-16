@@ -112,9 +112,9 @@ public class RubiksCubeTest {
         assertTrue(r.isSolved());
     }
 
-    @Test
+    /*@Test
     public void testSolveRandom() {
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < 3; i++) {
             RubiksCube c = RubiksCube.scrambledCube(20);
             RubiksCube copy = new RubiksCube(c);
             List<Character> solution = c.solve();
@@ -122,7 +122,7 @@ public class RubiksCubeTest {
             assertTrue(copy.rotate(solution).isSolved());
             assertTrue(solution.size() <= 14); // any 2x2 rubik's cube can be solved in 14 or less moves
         }
-    }
+    }*/
 
     @Test
     public void testSolve5() {
@@ -183,7 +183,7 @@ public class RubiksCubeTest {
         }
     }
 
-   /* @Test
+    @Test
     public void testSolve50() {
         // depending on your implementation, these tests may be too slow to run
         // it takes our solution ~3 minutes to run this test
@@ -200,10 +200,11 @@ public class RubiksCubeTest {
         for (int i = 0; i < 5; i++) {
             RubiksCube copy = new RubiksCube(brokenCubes[i]);
             List<Character> solution = brokenCubes[i].solve();
+            System.out.println("Found solution length: " + solution.size());
             assertEquals(correctLengths[i], solution.size());
             assertTrue(copy.rotate(solution).isSolved());
         }
-    }*/
+    }
 
     @Test
     public void testSolveOurs1() {
