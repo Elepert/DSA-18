@@ -46,6 +46,10 @@ public class BarnRepairTest {
             } else {
                 System.out.println(" passes");
             }
+            System.out.print("Solutions was: ");
+            System.out.println(solution);
+            System.out.print("Should have been: ");
+            System.out.println(answers[t]);
         }
 
         assert passed;

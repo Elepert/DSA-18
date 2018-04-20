@@ -19,7 +19,7 @@ public class MCCCTest {
             G.addEdge(newEdge);
             i = i + 3;
         }
-        assertEquals(MCCR.MCCR(G), 8);
+        assertEquals(8, MCCR.MCCR(G));
     }
 
     @Test
@@ -42,7 +42,7 @@ public class MCCCTest {
             G.addEdge(newEdge);
             i = i + 3;
         }
-        assertEquals(MCCR.MCCR(G), 53);
+        assertEquals(53, MCCR.MCCR(G));
     }
 
 
@@ -67,7 +67,7 @@ public class MCCCTest {
             G.addEdge(newEdge);
             i = i + 3;
         }
-        assertEquals(MCCR.MCCR(G), 42);
+        assertEquals(42, MCCR.MCCR(G));
     }
 
     @Test
@@ -84,6 +84,6 @@ public class MCCCTest {
             G.addEdge(newEdge);
             i = i + 3;
         }
-        assertEquals(MCCR.MCCR(G), 3);
+        assertEquals(3, MCCR.MCCR(G));
     }
 }

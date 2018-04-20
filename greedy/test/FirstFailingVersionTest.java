@@ -7,7 +7,7 @@ public class FirstFailingVersionTest {
     @Test
     public void caseOne() {
         IsFailingVersion ibv = n -> n >= 8;
-        assertEquals(FirstFailingVersion.firstBadVersion(10, ibv), 8L);
+        assertEquals( 8L, FirstFailingVersion.firstBadVersion(10, ibv));
     }
 
     @Test
