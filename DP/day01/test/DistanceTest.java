@@ -6,42 +6,42 @@ public class DistanceTest {
 
     @Test
     public void testMinEditDist1() {
-        assertEquals(EditDistance.minEditDist("sunday", "saturday"), 3);
+        assertEquals(3, EditDistance.minEditDist("sunday", "saturday"));
     }
 
     @Test
     public void testMinEditDist2() {
-        assertEquals(EditDistance.minEditDist("nick", "nek"), 2);
+        assertEquals(2, EditDistance.minEditDist("nick", "nek"));
     }
 
     @Test
     public void testMinEditDist3() {
-        assertEquals(EditDistance.minEditDist("ben", "bean"), 1);
+        assertEquals(1, EditDistance.minEditDist("ben", "bean"));
     }
 
     @Test
     public void testMinEditDist4() {
-        assertEquals(EditDistance.minEditDist("jingyi", "david"), 6);
+        assertEquals(6 ,EditDistance.minEditDist("jingyi", "david"));
     }
 
     @Test
     public void testMinEditDist5() {
-        assertEquals(EditDistance.minEditDist("", "bombdiggity"), 11);
+        assertEquals(11,EditDistance.minEditDist("", "bombdiggity"));
     }
 
     @Test
     public void testMinEditDist6() {
-        assertEquals(EditDistance.minEditDist("aabbcdef", "abbcdef"), 1);
+        assertEquals(1,EditDistance.minEditDist("aabbcdef", "abbcdef"));
     }
 
     @Test
     public void testMinEditDist7() {
-        assertEquals(EditDistance.minEditDist("aabbcdef", "aaabbcdef"), 1);
+        assertEquals(1,EditDistance.minEditDist("aabbcdef", "aaabbcdef"));
     }
 
     @Test
     public void testMinEditDist8() {
-        assertEquals(EditDistance.minEditDist("aaabcde", "abcfe"), 3);
+        assertEquals(3,EditDistance.minEditDist("aaabcde", "abcfe"));
     }
 
 }

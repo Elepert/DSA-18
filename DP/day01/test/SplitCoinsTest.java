@@ -31,4 +31,11 @@ public class SplitCoinsTest {
             output.close();
         }
     }
+
+    @Test
+    public void testSplitCoinsMine(){
+        int[] coins = {2,1,5};
+        assertEquals(2, SplitCoins.splitCoins(coins));
+
+    }
 }
